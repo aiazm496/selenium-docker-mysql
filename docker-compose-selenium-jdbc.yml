@@ -1,0 +1,57 @@
+version: '3.8'
+
+services:
+    mysql-container:
+        image: mysql:latest
+        ports:
+          - "3306:3306"
+        volumes:
+          - ./mysql-datastore:/var/lib/mysql
+        environment:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: test
+          
+          
+    chrome:
+        image: selenium/node-chrome:4.18.1-20240224
+        shm_size: 2gb
+        depends_on:
+          - selenium-hub
+        environment:
+          - SE_EVENT_BUS_HOST=selenium-hub
+          - SE_EVENT_BUS_PUBLISH_PORT=4442
+          - SE_EVENT_BUS_SUBSCRIBE_PORT=4443
+        ports:
+          - "6900:5900"
+
+    edge:
+        image: selenium/node-edge:4.18.1-20240224
+        shm_size: 2gb
+        depends_on:
+           - selenium-hub
+        environment:
+          - SE_EVENT_BUS_HOST=selenium-hub
+          - SE_EVENT_BUS_PUBLISH_PORT=4442
+          - SE_EVENT_BUS_SUBSCRIBE_PORT=4443
+        ports:
+          - "6901:5900"
+
+    firefox:
+        image: selenium/node-firefox:4.18.1-20240224
+        shm_size: 2gb
+        depends_on:
+          - selenium-hub
+        environment:
+          - SE_EVENT_BUS_HOST=selenium-hub
+          - SE_EVENT_BUS_PUBLISH_PORT=4442
+          - SE_EVENT_BUS_SUBSCRIBE_PORT=4443
+        ports:
+          - "6902:5900"
+
+    selenium-hub:
+        image: selenium/hub:4.18.1-20240224
+        ports:
+          - "4442:4442"
+          - "4443:4443"
+          - "4444:4444"
+          
